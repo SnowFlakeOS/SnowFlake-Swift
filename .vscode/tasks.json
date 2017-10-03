@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "taskName": "make run",
+            "taskName": "make clean & make run",
             "type": "shell",
-            "command": "make run",
+            "command": "make clean && make run",
             "group": {
                 "kind": "build",
                 "isDefault": true
