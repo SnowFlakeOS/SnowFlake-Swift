@@ -8,3 +8,5 @@ This is SnowWhiteOS is require for build.
 - Clang (https://clang.llvm.org/)
 # Thanks for
 https://stackoverflow.com/questions/27051471/call-c-kernel-from-assembly-bootloader/33263223#33263223
+https://github.com/rzhikharevich/swift-bare-bones
+https://github.com/klange/taylor
