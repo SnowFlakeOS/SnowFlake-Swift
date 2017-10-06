@@ -1,4 +1,4 @@
-	.section .data
+	.data
 
 	.globl globalinit_33_1BDF70FFC18749BAB495A73B459ED2F0_token6
 globalinit_33_1BDF70FFC18749BAB495A73B459ED2F0_token6:

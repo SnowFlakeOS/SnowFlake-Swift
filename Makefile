@@ -2,7 +2,7 @@ arch ?= x86_64
 boot := build/boot-$(arch).bin
 loader := build/loader-$(arch).elf
 kernel := build/kernel-$(arch).bin
-libgo := build/runtime/libgo.so
+libswift := build/runtime/libswift.so
 img := build/os-$(arch).img
 
 linker_script := src/arch/$(arch)/linker.ld
@@ -55,8 +55,12 @@ $(loader):
 	@mkdir -p $(shell dirname $@)
 	@nasm -f elf64 $(loader_source_file) -o $(loader)
 
-$(kernel): $(loader) $(runtime_c_object_files) $(runtime_as_object_files) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel) $(loader) $(runtime_c_object_files) $(runtime_as_object_files) $(swift_object_files)
+$(libswift): $(runtime_c_object_files) $(runtime_as_object_files)
+	@mkdir -p $(shell dirname $@)
+	@$(CC) -shared $(runtime_as_object_files) $(runtime_c_object_files) -o $(libswift)
+
+$(kernel): $(loader) $(libswift) $(swift_object_files) $(linker_script)
+	@ld -T $(linker_script) -o $(kernel) $(loader) $(libswift) $(swift_object_files)
 
 # compile swift files
 build/kernel/%.o: src/kernel/%.swift
