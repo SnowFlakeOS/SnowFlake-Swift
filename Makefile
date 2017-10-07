@@ -2,7 +2,6 @@ arch ?= x86_64
 boot := build/boot-$(arch).bin
 loader := build/loader-$(arch).elf
 kernel := build/kernel-$(arch).bin
-libswift := build/runtime/libswift.so
 img := build/os-$(arch).img
 
 linker_script := src/arch/$(arch)/linker.ld
@@ -20,6 +19,9 @@ runtime_c_object_files := $(patsubst src/runtime/%.c, \
 runtime_as_source_files := $(shell find src/runtime -name "*.S")
 runtime_as_object_files := $(patsubst src/runtime/%.S, \
     build/runtime/%.o, $(runtime_as_source_files))
+runtime_swift_source_files := $(shell find src/runtime -name "*.swift")
+runtime_swift_object_files := $(patsubst src/runtime/%.swift, \
+    build/runtime/%.o, $(runtime_swift_source_files))
 
 SWIFT = swiftc
 SWIFTFLAGS = -emit-library -emit-bc
@@ -55,12 +57,8 @@ $(loader):
 	@mkdir -p $(shell dirname $@)
 	@nasm -f elf64 $(loader_source_file) -o $(loader)
 
-$(libswift): $(runtime_c_object_files) $(runtime_as_object_files)
-	@mkdir -p $(shell dirname $@)
-	@$(CC) -shared $(runtime_as_object_files) $(runtime_c_object_files) -o $(libswift)
-
-$(kernel): $(loader) $(libswift) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel) $(loader) $(libswift) $(swift_object_files)
+$(kernel): $(loader) $(runtime_c_object_files) $(runtime_as_object_files) $(runtime_swift_object_files) $(swift_object_files) $(linker_script)
+	@ld -T $(linker_script) -o $(kernel) $(loader) $(runtime_c_object_files) $(runtime_as_object_files) $(runtime_swift_object_files) $(swift_object_files)
 
 # compile swift files
 build/kernel/%.o: src/kernel/%.swift
@@ -77,3 +75,9 @@ build/runtime/%.o: src/runtime/%.c
 build/runtime/%.o: src/runtime/%.S
 	@mkdir -p $(shell dirname $@)
 	@$(AS) $< -o $@
+
+# compile runtime swift files
+build/runtime/%.o: src/runtime/%.swift
+	@mkdir -p $(shell dirname $@)
+	@$(SWIFT) $(SWIFTFLAGS) $< -o $@.bc
+	@$(CC) $(CFLAGS) -c $@.bc -o $@

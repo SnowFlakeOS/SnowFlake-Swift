@@ -14,13 +14,17 @@ public func setCursor(x: UInt16, y: UInt16) {
 
 	var i = 0
 	repeat {
-		vram?[i] = 0xA00 // clear screen
+		vram?[i] = 0x0F00 | 00 // clear screen
 		i += 1
 	} while i < vramSize
 
-	vram?[0] = 0x0F48
+	vram?[0] = 0x0F48;
 
-	while 0 < 1 {
-		// TODO : make print string
-	}
+	/*let s: StaticString = "Hello, World!"
+
+	i = 0
+	while i < s.utf8CodeUnitCount {
+		vram?[i] = UInt16(s.utf8Start[i]) | 0xA00
+		i += 1
+	}*/
 }
