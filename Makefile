@@ -24,10 +24,10 @@ stdlib_swift_object_files := $(patsubst src/stdlib/%.swift, \
     build/stdlib/%.o, $(stdlib_swift_source_files))
 
 SWIFT = swiftc
-SWIFTFLAGS = -emit-ir -parse-as-library
+SWIFTFLAGS = -emit-library -emit-bc
 
 CC = clang
-CFLAGS = -ffreestanding -Wno-override-module
+CFLAGS = -ffreestanding
 
 CXX = clang++
 CXXFLAGS = -ffreestanding -Isrc/include
@@ -66,8 +66,8 @@ $(kernel): $(loader) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib
 # compile swift files
 build/kernel/%.o: src/kernel/%.swift
 	@mkdir -p $(shell dirname $@)
-	$(SWIFT) $(SWIFTFLAGS) $< -o ${@:.o=}.ll
-	@$(CC) $(CFLAGS) -c ${@:.o=}.ll -o $@
+	@$(SWIFT) $(SWIFTFLAGS) $< -o $@.bc
+	@$(CC) $(CFLAGS) -c $@.bc -o $@
 
 # compile stdlib c files
 build/stdlib/%.o: src/stdlib/%.c
@@ -82,5 +82,5 @@ build/stdlib/%.o: src/stdlib/%.S
 # compile stdlib swift files
 build/stdlib/%.o: src/stdlib/%.swift
 	@mkdir -p $(shell dirname $@)
-	@$(SWIFT) $(SWIFTFLAGS) $< -o ${@:.o=}.ll
-	@$(CC) $(CFLAGS) -c ${@:.o=}.ll -o $@
+	@$(SWIFT) $(SWIFTFLAGS) $< -o $@.bc
+	@$(CC) $(CFLAGS) -c $@.bc -o $@
