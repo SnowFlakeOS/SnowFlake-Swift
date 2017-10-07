@@ -13,15 +13,15 @@ swift_object_files := $(patsubst src/kernel/%.swift, \
 boot_source_file := src/arch/$(arch)/boot.asm
 loader_source_file := src/arch/$(arch)/loader.asm
 
-runtime_c_source_files := $(shell find src/runtime -name "*.c")
-runtime_c_object_files := $(patsubst src/runtime/%.c, \
-    build/runtime/%.o, $(runtime_c_source_files))
-runtime_as_source_files := $(shell find src/runtime -name "*.S")
-runtime_as_object_files := $(patsubst src/runtime/%.S, \
-    build/runtime/%.o, $(runtime_as_source_files))
-runtime_swift_source_files := $(shell find src/runtime -name "*.swift")
-runtime_swift_object_files := $(patsubst src/runtime/%.swift, \
-    build/runtime/%.o, $(runtime_swift_source_files))
+stdlib_c_source_files := $(shell find src/stdlib -name "*.c")
+stdlib_c_object_files := $(patsubst src/stdlib/%.c, \
+    build/stdlib/%.o, $(stdlib_c_source_files))
+stdlib_as_source_files := $(shell find src/stdlib -name "*.S")
+stdlib_as_object_files := $(patsubst src/stdlib/%.S, \
+    build/stdlib/%.o, $(stdlib_as_source_files))
+stdlib_swift_source_files := $(shell find src/stdlib -name "*.swift")
+stdlib_swift_object_files := $(patsubst src/stdlib/%.swift, \
+    build/stdlib/%.o, $(stdlib_swift_source_files))
 
 SWIFT = swiftc
 SWIFTFLAGS = -emit-library -emit-bc
@@ -57,8 +57,8 @@ $(loader):
 	@mkdir -p $(shell dirname $@)
 	@nasm -f elf64 $(loader_source_file) -o $(loader)
 
-$(kernel): $(loader) $(runtime_c_object_files) $(runtime_as_object_files) $(runtime_swift_object_files) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel) $(loader) $(runtime_c_object_files) $(runtime_as_object_files) $(runtime_swift_object_files) $(swift_object_files)
+$(kernel): $(loader) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib_swift_object_files) $(swift_object_files) $(linker_script)
+	@ld -T $(linker_script) -o $(kernel) $(loader) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib_swift_object_files) $(swift_object_files)
 
 # compile swift files
 build/kernel/%.o: src/kernel/%.swift
@@ -66,18 +66,18 @@ build/kernel/%.o: src/kernel/%.swift
 	@$(SWIFT) $(SWIFTFLAGS) $< -o $@.bc
 	@$(CC) $(CFLAGS) -c $@.bc -o $@
 
-# compile runtime c files
-build/runtime/%.o: src/runtime/%.c
+# compile stdlib c files
+build/stdlib/%.o: src/stdlib/%.c
 	@mkdir -p $(shell dirname $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
 	
-# compile runtime as files
-build/runtime/%.o: src/runtime/%.S
+# compile stdlib as files
+build/stdlib/%.o: src/stdlib/%.S
 	@mkdir -p $(shell dirname $@)
 	@$(AS) $< -o $@
 
-# compile runtime swift files
-build/runtime/%.o: src/runtime/%.swift
+# compile stdlib swift files
+build/stdlib/%.o: src/stdlib/%.swift
 	@mkdir -p $(shell dirname $@)
 	@$(SWIFT) $(SWIFTFLAGS) $< -o $@.bc
 	@$(CC) $(CFLAGS) -c $@.bc -o $@
