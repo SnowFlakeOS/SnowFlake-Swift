@@ -18,7 +18,7 @@ public func setCursor(x: UInt16, y: UInt16) {
 		i += 1
 	} while i < vramSize
 
-	vram?[0] = 0x0F48;
+	vram?[0] = 0x0F48
 
 	/*let s: StaticString = "Hello, World!"
 
