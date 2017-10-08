@@ -39,8 +39,8 @@ extension ExpressibleByIntegerLiteral
 //===--- Numeric ----------------------------------------------------------===//
 //===----------------------------------------------------------------------===//
 
-//public protocol Numeric : Equatable, ExpressibleByIntegerLiteral { }
-public protocol SignedNumeric /*: Numeric*/ { }
+public protocol Numeric /* : Equatable, ExpressibleByIntegerLiteral */ { }
+public protocol SignedNumeric : Numeric { }
 extension SignedNumeric { }
 extension Numeric { }
 

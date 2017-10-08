@@ -56,3 +56,53 @@ public protocol RawRepresentable {
   ///     // Prints "true"
   var rawValue: RawValue { get }
 }
+
+/// Returns a Boolean value indicating whether the two arguments are equal.
+///
+/// - Parameters:
+///   - lhs: A raw-representable instance.
+///   - rhs: A second raw-representable instance.
+@_inlineable // FIXME(sil-serialize-all)
+public func == <T : RawRepresentable>(lhs: T, rhs: T) -> Bool
+  where T.RawValue : Equatable {
+  return lhs.rawValue == rhs.rawValue
+}
+
+/// Returns a Boolean value indicating whether the two arguments are not equal.
+///
+/// - Parameters:
+///   - lhs: A raw-representable instance.
+///   - rhs: A second raw-representable instance.
+@_inlineable // FIXME(sil-serialize-all)
+public func != <T : RawRepresentable>(lhs: T, rhs: T) -> Bool
+  where T.RawValue : Equatable {
+  return lhs.rawValue != rhs.rawValue
+}
+
+// This overload is needed for ambiguity resolution against the
+// implementation of != for T : Equatable
+/// Returns a Boolean value indicating whether the two arguments are not equal.
+///
+/// - Parameters:
+///   - lhs: A raw-representable instance.
+///   - rhs: A second raw-representable instance.
+@_inlineable // FIXME(sil-serialize-all)
+public func != <T : Equatable>(lhs: T, rhs: T) -> Bool
+  where T : RawRepresentable, T.RawValue : Equatable {
+  return lhs.rawValue != rhs.rawValue
+}
+
+/// A type that can be initialized using the nil literal, `nil`.
+///
+/// `nil` has a specific meaning in Swift---the absence of a value. Only the
+/// `Optional` type conforms to `ExpressibleByNilLiteral`.
+/// `ExpressibleByNilLiteral` conformance for types that use `nil` for other
+/// purposes is discouraged.
+public protocol ExpressibleByNilLiteral {
+  /// Creates an instance initialized with `nil`.
+  init(nilLiteral: ())
+}
+
+public protocol _ExpressibleByBuiltinIntegerLiteral {
+  init(_builtinIntegerLiteral value: _MaxBuiltinIntegerType)
+}

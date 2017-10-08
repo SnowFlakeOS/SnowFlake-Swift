@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol Hashable : Equatable {
+public protocol Hashable /* : Equatable */ {
   /// The hash value.
   ///
   /// Hash values are not guaranteed to be equal across different executions of
@@ -22,14 +22,14 @@ public protocol Hashable : Equatable {
 public enum _RuntimeHelpers {}
 
 extension _RuntimeHelpers {
-  @_inlineable // FIXME(sil-serialize-all)
+  /*@_inlineable // FIXME(sil-serialize-all)
   @_silgen_name("swift_stdlib_Hashable_isEqual_indirect")
   public static func Hashable_isEqual_indirect<T : Hashable>(
     _ lhs: UnsafePointer<T>,
     _ rhs: UnsafePointer<T>
   ) -> Bool {
     return lhs.pointee == rhs.pointee
-  }
+  }*/
 
   @_inlineable // FIXME(sil-serialize-all)
   @_silgen_name("swift_stdlib_Hashable_hashValue_indirect")

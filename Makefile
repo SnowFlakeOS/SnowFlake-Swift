@@ -23,14 +23,15 @@ stdlib_swift_source_files := $(shell find src/stdlib -name "*.swift")
 stdlib_swift_object_files := $(patsubst src/stdlib/%.swift, \
     build/stdlib/%.o, $(stdlib_swift_source_files))
 
+libc_source_files := $(shell find src/libc -name "*.c")
+libc_object_files := $(patsubst src/libc/%.c, \
+    build/libc/%.o, $(libc_source_files))
+
 SWIFT = swiftc
 SWIFTFLAGS = -emit-library -emit-bc
 
 CC = clang
-CFLAGS = -ffreestanding
-
-CXX = clang++
-CXXFLAGS = -ffreestanding -Isrc/include
+CFLAGS = -ffreestanding -Isrc/include/libc
 
 AS = as
 
@@ -60,8 +61,8 @@ $(loader):
 	@mkdir -p $(shell dirname $@)
 	@nasm -f elf64 $(loader_source_file) -o $(loader)
 
-$(kernel): $(loader) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib_swift_object_files) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel) $(loader) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib_swift_object_files) $(swift_object_files)
+$(kernel): $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib_swift_object_files) $(swift_object_files) $(linker_script)
+	@ld -T $(linker_script) -o $(kernel) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(stdlib_swift_object_files) $(swift_object_files)
 
 # compile swift files
 build/kernel/%.o: src/kernel/%.swift
@@ -84,3 +85,8 @@ build/stdlib/%.o: src/stdlib/%.swift
 	@mkdir -p $(shell dirname $@)
 	@$(SWIFT) $(SWIFTFLAGS) $< -o $@.bc
 	@$(CC) $(CFLAGS) -c $@.bc -o $@
+
+# compile libc files
+build/libc/%.o: src/libc/%.c
+	@mkdir -p $(shell dirname $@)
+	@$(CC) $(CFLAGS) -c $< -o $@
