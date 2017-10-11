@@ -1,31 +1,25 @@
-OUTPUT_FORMAT("binary")
+OUTPUT_FORMAT("elf64-x86-64")
 ENTRY(_start)
+
+KERNEL_BASE = 0xffffff0000000000;
 
 SECTIONS
 {
-	. = 1M;
+	. = KERNEL_BASE;
 
-		.text BLOCK(4K) : ALIGN(4K)
+		.text : AT(ADDR(.text) - KERNEL_BASE)
 	{
 		*(.text)
 	}
 
-	/* Read-only data. */
-	.rodata BLOCK(4K) : ALIGN(4K)
+		/* Read-write data (uninitialized) and stack */
+	.bss : AT(ADDR(.bss) - KERNEL_BASE)
 	{
-		*(.rodata)
-	}
-
-	/* Read-write data (initialized) */
-	.data BLOCK(4K) : ALIGN(4K)
-	{
-		*(.data)
-	}
-
-	/* Read-write data (uninitialized) and stack */
-	.bss BLOCK(4K) : ALIGN(4K)
-	{
-		*(COMMON)
 		*(.bss)
+	}
+
+	
+    .rodata : AT(ADDR(.rodata) - KERNEL_BASE) {
+        *(.rodata)
 	}
 }

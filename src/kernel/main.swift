@@ -27,7 +27,4 @@ public func setCursor(x: UInt16, y: UInt16) {
 		vram?[i] = UInt16(s.utf8Start[i]) | 0xA00
 		i += 1
 	}*/
-	while 0 < 1{
-		
-	}
 }
