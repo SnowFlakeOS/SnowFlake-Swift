@@ -10,3 +10,5 @@ This is SnowWhiteOS is require for build.
 - https://stackoverflow.com/questions/27051471/call-c-kernel-from-assembly-bootloader/33263223#33263223
 - https://github.com/rzhikharevich/swift-bare-bones
 - https://github.com/klange/taylor
+- https://github.com/charliesome/mini64
+- https://github.com/apple/swift
