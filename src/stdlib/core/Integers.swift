@@ -39,7 +39,7 @@ extension ExpressibleByIntegerLiteral
 //===--- Numeric ----------------------------------------------------------===//
 //===----------------------------------------------------------------------===//
 
-public protocol Numeric /* : Equatable, ExpressibleByIntegerLiteral */ { }
+public protocol Numeric : Equatable/*, ExpressibleByIntegerLiteral */ { }
 public protocol SignedNumeric : Numeric { }
 extension SignedNumeric { }
 extension Numeric { }
@@ -48,8 +48,8 @@ extension Numeric { }
 //===--- BinaryInteger ----------------------------------------------------===//
 //===----------------------------------------------------------------------===//
 
-public protocol BinaryInteger /*:
-  Hashable, Numeric, CustomStringConvertible, Strideable
+public protocol BinaryInteger :
+  Hashable, Numeric/*, CustomStringConvertible, Strideable
   where Magnitude : BinaryInteger, Magnitude.Magnitude == Magnitude*/
   
 { }

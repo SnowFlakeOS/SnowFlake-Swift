@@ -12,8 +12,8 @@
 //===----------------------------------------------------------------------===//
 
 public protocol StringProtocol
-  /* : BidirectionalCollection,
+   : /*BidirectionalCollection,
   TextOutputStream, TextOutputStreamable,
-  LosslessStringConvertible, ExpressibleByStringLiteral,
-  Hashable, Comparable
+  LosslessStringConvertible, ExpressibleByStringLiteral,*/
+  Hashable/*, Comparable
 where Iterator.Element == Character, SubSequence : StringProtocol */ { }

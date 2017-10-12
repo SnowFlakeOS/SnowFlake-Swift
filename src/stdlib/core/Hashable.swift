@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol Hashable /* : Equatable */ {
+public protocol Hashable : Equatable  {
   /// The hash value.
   ///
   /// Hash values are not guaranteed to be equal across different executions of

@@ -30,10 +30,10 @@ public func setCursor(x: UInt16, y: UInt16) {
 	vram?[9] = 0x0F4F
 	vram?[10] = 0x0F53
 
-	/*let s: StaticString = "Hello, World!"
+	let s: StaticString = "Hello, World!"
 
 	i = 0
-	while i < s.utf8CodeUnitCount {
+	/*while i < s.utf8CodeUnitCount {
 		vram?[i] = UInt16(s.utf8Start[i]) | 0xA00
 		i += 1
 	}*/
