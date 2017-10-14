@@ -18,6 +18,10 @@ stdlib_as_source_files := $(shell find src/stdlib -name "*.S")
 stdlib_as_object_files := $(patsubst src/stdlib/%.S, \
     build/stdlib/%.o, $(stdlib_as_source_files))
 
+cxx_source_files := $(shell find src -name "*.cpp")
+cxx_object_files := $(patsubst src/%.cpp, \
+    build/%.cpp, $(cxx_source_files))
+
 swift_source_files := src/kernel/main.swift $(shell find src -name "*.swift" ! -name "main.swift")
 swift_bc_files := $(patsubst src/%.swift, \
     build/%.bc, $(swift_source_files))
@@ -29,8 +33,10 @@ libc_object_files := $(patsubst src/libc/%.c, \
     build/libc/%.o, $(libc_source_files))
 
 SWIFT = swiftc
+SWIFTFLAGS = -emit-library -emit-bc -static-stdlib -module-name SnowWhiteOS
 
-SWIFTFLAGS = -emit-library -emit-bc -module-name SnowWhiteOS
+CXX = clang++
+CXXFLAGS = -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -std=c++11 -Isrc/include
 
 CC = clang
 CFLAGS = -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -Isrc/include/libc
@@ -58,7 +64,7 @@ $(img): $(boot) $(kernel)
 	@dd if=$(kernel) of=$(img) conv=notrunc bs=512 seek=1
 
 $(iso): $(img)
-	@mkdir build/cdcontents
+	@mkdir -p build/cdcontents
 	@cp $(img) build/cdcontents
 	@mkisofs -o $(iso) -V SnowWhiteOS -b $(img) build/cdcontents
 
@@ -70,8 +76,8 @@ $(loader):
 	@mkdir -p $(shell dirname $@)
 	@nasm -f elf64 $(loader_source_file) -o $(loader)
 
-$(kernel): $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel_elf) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) 
+$(kernel): $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(cxx_object_files) $(swift_object_files) $(linker_script)
+	@ld -T $(linker_script) -o $(kernel_elf) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(cxx_object_files) $(swift_object_files) 
 	@objcopy $(kernel_elf) -O binary $(kernel)
 
 # compile stdlib c files
@@ -91,6 +97,11 @@ $(swift_object_files):
 	@$(foreach var,$(swift_bc_files),mv $(shell basename $(var)) $(var);)
 	@$(CC) $(CFLAGS) -c $(swift_bc_files)
 	@$(foreach var,$(swift_object_files),mv $(shell basename $(var)) $(var);)
+
+# compile cpp files
+$(cxx_object_files):
+	@mkdir -p $(shell dirname $@)
+	$(foreach var,$(cxx_source_files),$(CXX) $(CXXFLAGS) -c $(var) -o $(patsubst %.cpp,%.o,$(var));)
 
 # compile libc files
 build/libc/%.o: src/libc/%.c

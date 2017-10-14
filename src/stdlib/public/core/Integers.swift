@@ -39,7 +39,7 @@ extension ExpressibleByIntegerLiteral
 //===--- Numeric ----------------------------------------------------------===//
 //===----------------------------------------------------------------------===//
 
-public protocol Numeric : Equatable/*, ExpressibleByIntegerLiteral */ { }
+public protocol Numeric : Equatable, ExpressibleByIntegerLiteral { }
 public protocol SignedNumeric : Numeric { }
 extension SignedNumeric { }
 extension Numeric { }
@@ -82,8 +82,8 @@ extension Int { }
 //===--- FixedWidthInteger ------------------------------------------------===//
 //===----------------------------------------------------------------------===//
 
-public protocol FixedWidthInteger /* :
-  BinaryInteger, LosslessStringConvertible, _BitwiseOperations
+public protocol FixedWidthInteger  :
+  BinaryInteger/*, LosslessStringConvertible, _BitwiseOperations
   where Magnitude : FixedWidthInteger*/
 { }
 
