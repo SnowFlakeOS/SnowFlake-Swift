@@ -20,7 +20,7 @@ stdlib_as_object_files := $(patsubst src/stdlib/%.S, \
 
 cxx_source_files := $(shell find src -name "*.cpp")
 cxx_object_files := $(patsubst src/%.cpp, \
-    build/%.cpp, $(cxx_source_files))
+    build/%.o, $(cxx_source_files))
 
 swift_source_files := src/kernel/main.swift $(shell find src -name "*.swift" ! -name "main.swift")
 swift_bc_files := $(patsubst src/%.swift, \
@@ -101,7 +101,7 @@ $(swift_object_files):
 # compile cpp files
 $(cxx_object_files):
 	@mkdir -p $(shell dirname $@)
-	$(foreach var,$(cxx_source_files),$(CXX) $(CXXFLAGS) -c $(var) -o $(patsubst %.cpp,%.o,$(var));)
+	$(foreach var,$(cxx_source_files),$(CXX) $(CXXFLAGS) -c $(var) -o $(shell dirname $(cxx_object_files))/$(shell basename $(patsubst %.cpp,%.o,$(var)));)
 
 # compile libc files
 build/libc/%.o: src/libc/%.c

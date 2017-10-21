@@ -54,8 +54,21 @@ public protocol BinaryInteger :
   
 { }
 
-extension BinaryInteger { }
-extension Int { }
+extension Int {
+  // FIXME(ABI): using Int as the return type is wrong.
+  @_inlineable // FIXME(sil-serialize-all)
+  @_transparent
+  public func distance(to other: Int) -> Int {
+    return other - self
+  }
+
+  // FIXME(ABI): using Int as the parameter type is wrong.
+  @_inlineable // FIXME(sil-serialize-all)
+  @_transparent
+  public func advanced(by n: Int) -> Int {
+    return self + n
+  }
+ }
 
 //===----------------------------------------------------------------------===//
 //===--- Heterogeneous comparison -----------------------------------------===//
