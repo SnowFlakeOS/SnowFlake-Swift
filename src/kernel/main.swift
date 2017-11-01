@@ -33,7 +33,8 @@ public func setCursor(x: UInt16, y: UInt16) {
 	let s: StaticString = "Hello, World!"
 
 	i = 0
-	
+	var test = s.utf8Start[i]
+
 	/*while i < s.utf8CodeUnitCount {
 		vram?[i] = UInt16(s.utf8Start[i]) | 0xA00
 		i += 1

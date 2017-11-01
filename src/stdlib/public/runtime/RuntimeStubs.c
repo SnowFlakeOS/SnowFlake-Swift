@@ -1,8 +1,5 @@
 #define NULL (void *)0
 
-int _T0Bi32_N;
-int _T0Bi64_N;
-int _T0Bi8_N;
 void _swift_getEnumCaseSinglePayload(void) {}
 void _swift_getGenericMetadata(void) {}
 void _swift_slowAlloc(void) {}

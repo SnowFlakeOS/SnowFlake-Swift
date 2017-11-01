@@ -18,10 +18,6 @@ stdlib_as_source_files := $(shell find src/stdlib -name "*.S")
 stdlib_as_object_files := $(patsubst src/stdlib/%.S, \
     build/stdlib/%.o, $(stdlib_as_source_files))
 
-cxx_source_files := $(shell find src -name "*.cpp")
-cxx_object_files := $(patsubst src/%.cpp, \
-    build/%.o, $(cxx_source_files))
-
 swift_source_files := src/kernel/main.swift $(shell find src -name "*.swift" ! -name "main.swift")
 swift_bc_files := $(patsubst src/%.swift, \
     build/%.bc, $(swift_source_files))
@@ -76,8 +72,8 @@ $(loader):
 	@mkdir -p $(shell dirname $@)
 	@nasm -f elf64 $(loader_source_file) -o $(loader)
 
-$(kernel): $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(cxx_object_files) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel_elf) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(cxx_object_files) $(swift_object_files) 
+$(kernel): $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) $(linker_script)
+	@ld -T $(linker_script) -o $(kernel_elf) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) 
 	@objcopy $(kernel_elf) -O binary $(kernel)
 
 # compile stdlib c files
@@ -97,11 +93,6 @@ $(swift_object_files):
 	@$(foreach var,$(swift_bc_files),mv $(shell basename $(var)) $(var);)
 	@$(CC) $(CFLAGS) -c $(swift_bc_files)
 	@$(foreach var,$(swift_object_files),mv $(shell basename $(var)) $(var);)
-
-# compile cpp files
-$(cxx_object_files):
-	@mkdir -p $(shell dirname $@)
-	$(foreach var,$(cxx_source_files),$(CXX) $(CXXFLAGS) -c $(var) -o $(shell dirname $(cxx_object_files))/$(shell basename $(patsubst %.cpp,%.o,$(var)));)
 
 # compile libc files
 build/libc/%.o: src/libc/%.c

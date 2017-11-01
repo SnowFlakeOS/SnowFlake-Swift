@@ -96,7 +96,7 @@ extension Int {
 //===----------------------------------------------------------------------===//
 
 public protocol FixedWidthInteger  :
-  BinaryInteger/*, LosslessStringConvertible, _BitwiseOperations
+  BinaryInteger, LosslessStringConvertible/*, _BitwiseOperations
   where Magnitude : FixedWidthInteger*/
 { }
 
@@ -110,4 +110,3 @@ extension FixedWidthInteger { }
 //===----------------------------------------------------------------------===//
 //===--- Concrete FixedWidthIntegers --------------------------------------===//
 //===----------------------------------------------------------------------===//
-
