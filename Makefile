@@ -32,12 +32,16 @@ SWIFT = swiftc
 SWIFTFLAGS = -emit-library -emit-bc -static-stdlib -module-name SnowWhiteOS
 
 CXX = clang++
-CXXFLAGS = -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -std=c++11 -Isrc/include
+CXXFLAGS = -target x86_64-pc-linux-gnu -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -std=c++11 -Isrc/include
 
 CC = clang
-CFLAGS = -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -Isrc/include/libc
+CFLAGS = -target x86_64-pc-linux-gnu -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -Isrc/include/libc
 
-AS = as
+NASM = nasm
+
+LD = $(arch)-elf-ld
+AS = $(arch)-elf-as
+OBJCOPY = $(arch)-elf-objcopy
 
 .PHONY: all clean run img
 
@@ -66,15 +70,15 @@ $(iso): $(img)
 
 $(boot):
 	@mkdir -p $(shell dirname $@)
-	@nasm -f bin $(boot_source_file) -o $(boot)
+	@$(NASM) -f bin $(boot_source_file) -o $(boot)
 
 $(loader):
 	@mkdir -p $(shell dirname $@)
-	@nasm -f elf64 $(loader_source_file) -o $(loader)
+	@$(NASM) -f elf64 $(loader_source_file) -o $(loader)
 
 $(kernel): $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) $(linker_script)
-	@ld -T $(linker_script) -o $(kernel_elf) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) 
-	@objcopy $(kernel_elf) -O binary $(kernel)
+	@$(LD) -T $(linker_script) -o $(kernel_elf) $(loader) $(libc_object_files) $(stdlib_c_object_files) $(stdlib_as_object_files) $(swift_object_files) 
+	@$(OBJCOPY) $(kernel_elf) -O binary $(kernel) # debug
 
 # compile stdlib c files
 build/stdlib/%.o: src/stdlib/%.c
