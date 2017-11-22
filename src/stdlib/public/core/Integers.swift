@@ -51,8 +51,77 @@ extension Numeric { }
 public protocol BinaryInteger :
   Hashable, Numeric/*, CustomStringConvertible, Strideable
   where Magnitude : BinaryInteger, Magnitude.Magnitude == Magnitude*/
-  
-{ }
+
+{ 
+  static var isSigned: Bool { get }
+
+  init?<T : BinaryFloatingPoint>(exactly source: T)
+
+  init<T : BinaryFloatingPoint>(_ source: T)
+
+  init<T : BinaryInteger>(_ source: T)
+
+  init<T : BinaryInteger>(truncatingIfNeeded source: T)
+
+  init<T : BinaryInteger>(clamping source: T)
+
+  var _lowWord: UInt { get }
+
+  var bitWidth : Int { get }
+
+  var trailingZeroBitCount: Int { get }
+
+  static func /(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func /=(_ lhs: inout Self, _ rhs: Self)
+
+  static func %(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func %=(_ lhs: inout Self, _ rhs: Self)
+
+  static func +(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func -(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func -=(_ lhs: inout Self, _ rhs: Self)
+
+  static func *(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func *=(_ lhs: inout Self, _ rhs: Self)
+
+  static prefix func ~ (_ x: Self) -> Self
+
+  static func &(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func &=(_ lhs: inout Self, _ rhs: Self)
+
+  static func |(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func |=(_ lhs: inout Self, _ rhs: Self)
+
+  static func ^(_ lhs: Self, _ rhs: Self) -> Self
+
+  static func ^=(_ lhs: inout Self, _ rhs: Self)
+
+  static func >><RHS: BinaryInteger>(
+    _ lhs: Self, _ rhs: RHS
+  ) -> Self
+
+  static func >>=<RHS: BinaryInteger>(
+    _ lhs: inout Self, _ rhs: RHS)
+
+  static func <<<RHS: BinaryInteger>(
+    _ lhs: Self, _ rhs: RHS
+  ) -> Self
+
+  static func <<=<RHS: BinaryInteger>(
+    _ lhs: inout Self, _ rhs: RHS)
+
+  func quotientAndRemainder(dividingBy rhs: Self)
+    -> (quotient: Self, remainder: Self)
+
+  func signum() -> Self
+}
 
 extension Int {
   // FIXME(ABI): using Int as the return type is wrong.
@@ -98,7 +167,42 @@ extension Int {
 public protocol FixedWidthInteger  :
   BinaryInteger, LosslessStringConvertible/*, _BitwiseOperations
   where Magnitude : FixedWidthInteger*/
-{ }
+{ 
+  static var bitWidth : Int { get }
+
+  static var max: Self { get }
+
+  static var min: Self { get }
+
+  func addingReportingOverflow(
+    _ rhs: Self
+  ) -> (partialValue: Self, overflow: Bool)
+
+  func subtractingReportingOverflow(
+    _ rhs: Self
+  ) -> (partialValue: Self, overflow: Bool)
+
+  func multipliedReportingOverflow(
+    by rhs: Self
+  ) -> (partialValue: Self, overflow: Bool)
+
+  func dividedReportingOverflow(
+    by rhs: Self
+  ) -> (partialValue: Self, overflow: Bool)
+
+  func remainderReportingOverflow(
+    dividingBy rhs: Self
+  ) -> (partialValue: Self, overflow: Bool)
+
+  /*func multipliedFullWidth(by other: Self) -> (high: Self, low: Self.Magnitude)*/
+
+  /*func dividingFullWidth(_ dividend: (high: Self, low: Self.Magnitude))
+    -> (quotient: Self, remainder: Self)*/
+
+  init(_truncatingBits bits: UInt)
+
+  var nonzeroBitCount: Int { get }
+}
 
 extension FixedWidthInteger { }
 
@@ -110,3 +214,9 @@ extension FixedWidthInteger { }
 //===----------------------------------------------------------------------===//
 //===--- Concrete FixedWidthIntegers --------------------------------------===//
 //===----------------------------------------------------------------------===//
+
+extension UInt16 {
+  init(_: UInt8) {
+    self.init()
+  }
+}
