@@ -1,8 +1,8 @@
-# SnowWhiteOS
-SnowWhiteOS, This will writing swift.
+# SnowFlake
+SnowFlake, this is an Operating System and is written in Swift.
 
 # Building
-This is SnowWhiteOS is require for build.
+This is SnowFlake is require for build.
 - Swift (>= 4) (https://swift.org)
 - NASM (http://www.nasm.us/)
 - GCC Toolchain or GCC (https://gcc.gnu.org/)
@@ -12,20 +12,20 @@ This is SnowWhiteOS is require for build.
 I will add later
 
 ## On Mac
-macOS is default ld is bsd ld (can not link SnowWhiteOS)\
+macOS is default ld is bsd ld (can not link SnowFlake)\
 and default as is clang too (build error)\
-If you want build SnowWhiteOS on macOS\
+If you want build SnowFlake on macOS\
 - Need HomeBrew (https://brew.sh/)
 - Need Xcode Command Line Tools (This will install both HomeBrew)
 - Need NASM (can install in HomeBrew)
-- Need QEMU (if you want run SnowWhiteOS)
+- Need QEMU (if you want run SnowFlake)
 ```
 $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 $ homebrew install nasm qemu
-$ git clone https://github.com/SnowWhiteOS/mac-binutils-script.git
+$ git clone https://github.com/SnowFlake/mac-binutils-script.git
 $ cd mac-binutils-script
 $ sudo ./compile.sh
-$ git clone https://github.com/SnowWhiteOS/SnowWhiteOS.git
+$ git clone https://github.com/SnowFlake/SnowFlake.git
 $ cd SnowWhiteOS
 $ make run
 ```
