@@ -13,6 +13,15 @@
             }
         },
         {
+            "taskName": "make clean & make run (mac)",
+            "type": "shell",
+            "command": "export LLVM_INCLUDE_PATH=/usr/local/opt/llvm/include && make clean && make run",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "taskName": "make clean",
             "type": "shell",
             "command": "make clean",

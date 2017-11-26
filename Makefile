@@ -29,7 +29,7 @@ libc_object_files := $(patsubst src/libc/%.c, \
     build/libc/%.o, $(libc_source_files))
 
 SWIFT = swiftc
-SWIFTFLAGS = -emit-library -emit-bc -static-stdlib -module-name SnowWhiteOS -import-objc-header src/stdlib/public/SwiftShims/shim.h
+SWIFTFLAGS = -emit-library -emit-bc -static-stdlib -module-name SnowWhiteOS -import-objc-header src/stdlib/public/SwiftShims/shim.h -I $(shell echo $$LLVM_INCLUDE_PATH)
 
 CXX = clang++
 CXXFLAGS = -target x86_64-pc-linux-gnu -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -std=c++11 -Isrc/include
@@ -93,7 +93,7 @@ build/stdlib/%.o: src/stdlib/%.S
 # compile swift files
 $(swift_object_files):
 	@$(foreach var,$(swift_bc_files),mkdir -p $(shell dirname $(var));)
-	@$(SWIFT) $(SWIFTFLAGS) $(swift_source_files)
+	$(SWIFT) $(SWIFTFLAGS) $(swift_source_files)
 	@$(foreach var,$(swift_bc_files),mv $(shell basename $(var)) $(var);)
 	@$(CC) $(CFLAGS) -c $(swift_bc_files)
 	@$(foreach var,$(swift_object_files),mv $(shell basename $(var)) $(var);)
