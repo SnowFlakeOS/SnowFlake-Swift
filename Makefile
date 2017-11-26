@@ -29,7 +29,7 @@ libc_object_files := $(patsubst src/libc/%.c, \
     build/libc/%.o, $(libc_source_files))
 
 SWIFT = swiftc
-SWIFTFLAGS = -emit-library -emit-bc -static-stdlib -module-name SnowWhiteOS
+SWIFTFLAGS = -emit-library -emit-bc -static-stdlib -module-name SnowWhiteOS -import-objc-header src/stdlib/public/SwiftShims/shim.h
 
 CXX = clang++
 CXXFLAGS = -target x86_64-pc-linux-gnu -ffreestanding -mcmodel=large -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -std=c++11 -Isrc/include
